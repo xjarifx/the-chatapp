@@ -2,7 +2,7 @@ import Room from "../models/room.model.js";
 
 const reservedNames = ["admin", "system", "null", "undefined", "root"];
 
-export const authRoom = async (req, res) => {
+export const auth = async (req, res) => {
   let { name } = req.body;
   if (!name) {
     return res.status(400).json({ message: "Room name required" });

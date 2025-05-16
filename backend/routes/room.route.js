@@ -1,8 +1,8 @@
 import express from "express";
-import { authRoom } from "../controllers/room.controller.js";
+import { auth } from "../controllers/room.controller.js";
 
 const router = express.Router();
 
-router.post("/auth-room", authRoom);
+router.post("/auth", auth);
 
 export default router;
