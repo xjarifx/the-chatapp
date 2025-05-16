@@ -25,8 +25,8 @@ await connectDB();
 app.use(express.json());
 
 // routes
-app.use("/api/users", userRoutes);
-app.use("/api/rooms", roomRoutes);
+app.use("/users", userRoutes);
+app.use("/rooms", roomRoutes);
 
 io.on("connection", handleSocketEvents);
 
