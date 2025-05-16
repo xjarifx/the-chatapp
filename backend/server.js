@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
@@ -25,6 +27,8 @@ app.use("/api/rooms", roomRoutes);
 
 io.on("connection", handleSocketEvents);
 
-server.listen(3000, () => {
-  console.log("Running on http://localhost:3000");
+const PORT = process.env.PORT;
+
+server.listen(PORT, () => {
+  console.log(`Running on http://localhost:${PORT}`);
 });
