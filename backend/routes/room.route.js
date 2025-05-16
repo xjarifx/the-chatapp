@@ -1,8 +1,8 @@
 import express from "express";
-import { addRoom } from "../controllers/room.controller.js";
+import { authRoom } from "../controllers/room.controller.js";
 
 const router = express.Router();
 
-router.post("/add-room", addRoom);
+router.post("/auth-room", authRoom);
 
 export default router;

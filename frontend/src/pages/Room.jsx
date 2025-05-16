@@ -2,27 +2,17 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Room({ user, setRoom, setUser }) {
-  const [roomName, setRoomName] = useState("");
-  const [createRoomId, setCreateRoomId] = useState(""); // for Create Room
-  const [joinRoomId, setJoinRoomId] = useState(""); // for Join Room
+  const [roomInput, setRoomInput] = useState("");
   const navigate = useNavigate();
 
-  const handleCreate = () => {
-    if (roomName && createRoomId) {
-      setRoom({ name: roomName, id: createRoomId });
-      navigate("/chat");
-    } else {
-      alert("Please fill in both Room Name and Room ID.");
-    }
-  };
 
-  const handleJoin = () => {
-    if (joinRoomId) {
-      setRoom({ name: "Joined Room", id: joinRoomId });
-      navigate("/chat");
-    } else {
-      alert("Please enter a Room ID.");
-    }
+  // Smart join or create room
+  const handleSmartRoom = () => {
+    const normalizedRoom = roomInput.trim().toLowerCase();
+    // Here you would call your backend to join or create the room.
+    // For now, just set the room and navigate.
+    setRoom({ name: normalizedRoom });
+    navigate("/chat");
   };
 
   const handleLogout = () => {
@@ -38,40 +28,18 @@ export default function Room({ user, setRoom, setUser }) {
           Welcome, {user.username}
         </h2>
 
-        {/* Create Room */}
+        {/* Smart Join/Create Room */}
         <div className="mb-6">
-          <h3 className="mb-2 text-lg font-semibold">Create Room</h3>
+          <h3 className="mb-2 text-lg font-semibold">Join or Create Room</h3>
           <input
             type="text"
             placeholder="Room Name"
             className="input input-bordered mb-2 w-full"
-            value={roomName}
-            onChange={(e) => setRoomName(e.target.value)}
+            value={roomInput}
+            onChange={(e) => setRoomInput(e.target.value)}
           />
-          <input
-            type="text"
-            placeholder="Room ID"
-            className="input input-bordered mb-2 w-full"
-            value={createRoomId}
-            onChange={(e) => setCreateRoomId(e.target.value)}
-          />
-          <button className="btn btn-success w-full" onClick={handleCreate}>
-            Create Room
-          </button>
-        </div>
-
-        {/* Join Room */}
-        <div className="mb-4">
-          <h3 className="mb-2 text-lg font-semibold">Join Room</h3>
-          <input
-            type="text"
-            placeholder="Room ID"
-            className="input input-bordered mb-2 w-full"
-            value={joinRoomId}
-            onChange={(e) => setJoinRoomId(e.target.value)}
-          />
-          <button className="btn btn-primary w-full" onClick={handleJoin}>
-            Join Room
+          <button className="btn btn-primary w-full" onClick={handleSmartRoom}>
+            Join or Create Room
           </button>
         </div>
 

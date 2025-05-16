@@ -1,21 +1,43 @@
 import Room from "../models/room.model.js";
 
-// Add a new room
-export const addRoom = async (req, res) => {
-  const { name, id } = req.body;
+const reservedNames = ["admin", "system", "null", "undefined", "root"];
 
-  if (!name || !id) {
-    return res.status(400).send({ message: "Room name and id are required" });
+export const authRoom = async (req, res) => {
+  let { name } = req.body;
+  if (!name) {
+    return res.status(400).json({ message: "Room name required" });
+  }
+  name = name.trim().toLowerCase();
+
+  if (name.length > 16) {
+    return res
+      .status(400)
+      .json({ message: "Room name must be 16 characters or fewer." });
+  }
+  if (!/^[a-z0-9]+$/i.test(name)) {
+    return res
+      .status(400)
+      .json({
+        message:
+          "Room name can only contain alphanumeric characters (A-Z, 0-9).",
+      });
+  }
+  if (reservedNames.includes(name)) {
+    return res
+      .status(400)
+      .json({
+        message: "This room name is reserved. Please choose another name.",
+      });
   }
 
   try {
-    const existingRoom = await Room.findOne({ id });
-    if (existingRoom) {
-      return res.status(409).send({ message: "Room already exists" });
+    let room = await Room.findOne({ name });
+    if (!room) {
+      room = new Room({ name });
+      await room.save();
+      return res.status(201).json({ message: "Room created and joined", room });
     }
-    const newRoom = new Room({ name, id });
-    await newRoom.save();
-    res.status(201).json(newRoom);
+    return res.status(200).json({ message: "Joined existing room", room });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
