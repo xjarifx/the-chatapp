@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+const socket = io("http://localhost:3001");
 
 export default function Chat({ user, room, setRoom }) {
   const [message, setMessage] = useState("");
@@ -23,6 +23,7 @@ export default function Chat({ user, room, setRoom }) {
 
   useEffect(() => {
     socket.on("receive_message", (message) => {
+      console.log("Received message:", message);
       setMessages((prev) => [...prev, message]);
     });
 
@@ -33,7 +34,7 @@ export default function Chat({ user, room, setRoom }) {
 
   const handleSend = () => {
     if (message.trim()) {
-      const newMessage = { user: user.username, text: message }; // 👈 just send username
+      const newMessage = { user: user.username, text: message };
       socket.emit("send_message", { room, message: newMessage });
       setMessages((prev) => [...prev, newMessage]);
       setMessage("");
@@ -51,7 +52,6 @@ export default function Chat({ user, room, setRoom }) {
       <div className="mb-4 flex items-center justify-between border-b pb-3">
         <div>
           <h2 className="text-xl font-bold">{room.name}</h2>
-          <p className="text-sm text-gray-500">Room ID: {room.id}</p>
         </div>
         <button className="btn btn-error btn-sm" onClick={leaveRoom}>
           Leave Room
@@ -59,14 +59,25 @@ export default function Chat({ user, room, setRoom }) {
       </div>
 
       {/* Chat Messages */}
-      <div className="mb-4 flex-1 space-y-3 overflow-y-auto">
+      <div className="mb-4 flex-1 space-y-4 overflow-y-auto p-4">
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`chat ${msg.user === user.username ? "chat-end" : "chat-start"}`}
+            className={`flex w-full ${msg.user === user.username ? "justify-end" : "justify-start"}`}
           >
-            <div className="chat-bubble">
-              <strong>{msg.user}</strong>: {msg.text}
+            <div
+              className={`max-w-[80%] rounded-lg p-2 ${
+                msg.user === user.username
+                  ? "bg-primary text-primary-content"
+                  : "bg-base-200 text-base-content"
+              }`}
+            >
+              <div className="mb-1 text-sm font-bold">
+                {/* {msg.user === user.username ? "You" : msg.user} */}
+                {/* {msg.user} */}
+                {msg.user === user.username ? `${msg.user} (You)` : msg.user}
+              </div>
+              <div>{msg.text}</div> {/* Display the message itself */}
             </div>
           </div>
         ))}

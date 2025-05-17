@@ -8,6 +8,7 @@ import connectDB from "./db.js";
 import userRoutes from "./routes/user.route.js";
 import roomRoutes from "./routes/room.route.js";
 import { handleSocketEvents } from "./sockets/socketHandler.js";
+import cors from "cors";
 
 const app = express();
 const server = createServer(app);
@@ -19,12 +20,19 @@ const io = new Server(server, {
   },
 });
 
-// db con
+// Connect to database
 await connectDB();
 
 app.use(express.json());
 
-// routes
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  })
+);
+
+// Use routes
 app.use("/users", userRoutes);
 app.use("/rooms", roomRoutes);
 

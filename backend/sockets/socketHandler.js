@@ -11,8 +11,10 @@ export const handleSocketEvents = (socket) => {
     socket.leave(room.name);
   });
 
+  // victim
   socket.on("send_message", ({ room, message }) => {
-    console.log(`Message from ${message.user.username}: ${message.text}`);
+    // message.user is a string (username)
+    console.log(`Message from ${message.user}: ${message.text}`);
     socket.to(room.name).emit("receive_message", message);
   });
 

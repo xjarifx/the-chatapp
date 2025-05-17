@@ -3,16 +3,33 @@ import { useNavigate } from "react-router-dom";
 
 export default function Room({ user, setRoom, setUser }) {
   const [roomInput, setRoomInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-
   // Smart join or create room
-  const handleSmartRoom = () => {
+  const handleSmartRoom = async () => {
     const normalizedRoom = roomInput.trim().toLowerCase();
-    // Here you would call your backend to join or create the room.
-    // For now, just set the room and navigate.
-    setRoom({ name: normalizedRoom });
-    navigate("/chat");
+    if (!normalizedRoom) return;
+
+    try {
+      setIsLoading(true);
+      const res = await fetch("http://localhost:3001/rooms/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }, // <-- FIXED
+        body: JSON.stringify({ name: normalizedRoom }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setRoom(data.room);
+        navigate("/chat");
+      } else {
+        alert(data.message || "Failed to join/create room");
+      }
+    } catch (error) {
+      alert("Server error: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleLogout = () => {
