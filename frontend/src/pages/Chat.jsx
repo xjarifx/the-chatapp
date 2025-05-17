@@ -63,21 +63,20 @@ export default function Chat({ user, room, setRoom }) {
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`flex w-full ${msg.user === user.username ? "justify-end" : "justify-start"}`}
+            className={`flex w-full flex-col ${msg.user === user.username ? "items-end" : "items-start"}`}
           >
+            {/* Username above the message bubble */}
+            <div className="text-base-content/70 mb-1 text-xs font-semibold">
+              {msg.user === user.username ? "You" : msg.user}
+            </div>
             <div
-              className={`max-w-[80%] rounded-lg p-2 ${
+              className={`max-w-[80%] rounded border px-4 py-2 shadow-md ${
                 msg.user === user.username
-                  ? "bg-primary text-primary-content"
-                  : "bg-base-200 text-base-content"
+                  ? "bg-primary text-primary-content border-primary/40"
+                  : "bg-base-200 text-base-content border-base-300"
               }`}
             >
-              <div className="mb-1 text-sm font-bold">
-                {/* {msg.user === user.username ? "You" : msg.user} */}
-                {/* {msg.user} */}
-                {msg.user === user.username ? `${msg.user} (You)` : msg.user}
-              </div>
-              <div>{msg.text}</div> {/* Display the message itself */}
+              <div>{msg.text}</div>
             </div>
           </div>
         ))}
